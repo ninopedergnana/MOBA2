@@ -30,15 +30,35 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
 	const [lonlat, setLonLat] = useState<Lonlat>({lon: 0, lat: 0,});
 	const [weatherType, setWeatherType] = useState<WeatherType>({ title: "", subtitle: "", icon: "", color: "" })
 
-	const latlonUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${text}&limit=1&appid=82899956a4b3c21ea1f16a30c3eed6c0`
-	const cityUrl = `https://api.openweathermap.org/data/2.5/weather?&lat=${lonlat.lat}&lon=${lonlat.lon}&appid=82899956a4b3c21ea1f16a30c3eed6c0`
+const latlonUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${text}&limit=1&appid=82899956a4b3c21ea1f16a30c3eed6c0`
+const cityUrl = `https://api.openweathermap.org/data/2.5/weather?&lat=${lonlat.lat}&lon=${lonlat.lon}&appid=82899956a4b3c21ea1f16a30c3eed6c0`
+useEffect(() => {
+  axios.get(latlonUrl)
+      .then(res => {
+        setLonLat({lon: res.data[0].lon, lat: res.data[0].lat})
+        forecast.location = res.data[0].name
+        forecast.country = res.data[0].country
+      }).catch(e => {
+        console.log(e);
+      })
+  axios.get(cityUrl)
+  .then(res => {
+    console.log(res.data.weather.main)
+    forecast.main = "Generally: " + res.data.weather[0].main + " with " + res.data.weather[0].description
+    forecast.temp = Math.round(res.data.main.temp - 272)
+    //console.log(res.data.weather[0].main);
 
-	useEffect(() => {  
+  }).catch(e => {
+    console.log(e);
+  })
+}, [latlonUrl, cityUrl])
+
+	useEffect(() => {
 	axios.get(latlonUrl)
 		.then(res => {
 			setLonLat({lon: res.data[0].lon, lat: res.data[0].lat})
 			forecast.location = res.data[0].name + ", " + res.data[0].country
-			
+
 		}).catch(e => {
 			console.log(e);
 		})
@@ -46,7 +66,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
 	.then(res => {
 		setWeatherType(weatherConditions[res.data.weather[0].main])
 		forecast.main = weatherType.title + ". " + weatherType.subtitle
-		forecast.temp = Math.round(res.data.main.temp - 272)	
+		forecast.temp = Math.round(res.data.main.temp - 272)
 		console.log(weatherType.icon)
 	}).catch(e => {
 		console.log(e);
@@ -85,7 +105,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
 	title: {
 		fontSize: 20,
 		fontWeight: 'bold',
-	},   
+	},
 	subtitle: {
 		fontSize: 15,
 		fontWeight: 'bold',

@@ -6,8 +6,7 @@ import Result from '../Result'
 import Detail from '../Detail'
 
 
-
-const {Navigator, Screen} = createNativeStackNavigator();
+const { Navigator, Screen } = createNativeStackNavigator()
 
 export default function () {
     return (

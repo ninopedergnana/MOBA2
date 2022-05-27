@@ -8,7 +8,7 @@ export default function useCoinList(search: string) {
         async () => {
             const coinList = await getCoinList()
             const searchTerm = search.toLowerCase()
-            return coinList.coins.filter(current => 
+            return coinList.coins.filter((current: any) =>
                 current.id.toLowerCase().includes(searchTerm) || 
                 current.name.toLowerCase().includes(searchTerm) || 
                 current.symbol.toLowerCase().includes(searchTerm))
